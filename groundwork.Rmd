@@ -396,3 +396,33 @@ bptest(backwardBIC_bcmodel)
 ad.test(resid(backwardBIC_bcmodel))
 
 ```
+
+In both cases, the very small p-values (significantly less than 0.05) lead to rejection of the null hypothesis of homoscedasticity. This means that there is evidence of heteroscedasticity (the variance of the residuals is not constant), which violates one of the assumptions of linear regression.
+
+
+The very small p-values in the Anderson-Darling tests indicate non-normality in the residuals of both models. This means that the residuals do not follow a normal distribution, which violates another key assumption of linear regression.
+
+
+
+```{r}
+interaction3_model_fix = lm(quality ~ (.)^3, 
+                            data = wine_data_combined, 
+                            subset = cd < 4 / length(cd))
+```
+```{r}
+coefficients_summary = summary(interaction3_model_fix)$coefficients
+
+coefficients_summary
+```
+As we can see the p values are still pretty large for the individual
+```{r}
+overall_p_value = summary(interaction3_model_fix)$fstatistic
+f_stat = overall_p_value[1]
+df1 = overall_p_value[2]    
+df2 = overall_p_value[3]    
+
+p_value_overall_model = pf(f_stat, df1, df2, lower.tail = FALSE)
+
+p_value_overall_model
+```
+the small overall p value rejects null hypothesis
